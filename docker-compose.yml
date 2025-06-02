@@ -10,6 +10,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=${CONNECTION_STRING}
+      - JwtSettings__SecretKey=${JwtSettings__SecretKey}
+      - JwtSettings__Issuer=${JwtSettings__Issuer}
+      - JwtSettings__Audience=${JwtSettings__Audience}
+      - JwtSettings__ExpiryMinutes=${JwtSettings__ExpiryMinutes}
+      - Authentication__Google__ClientId=${Authentication__Google__ClientId}
+      - Authentication__Google__ClientSecret=${Authentication__Google__ClientSecret}
     depends_on:
       - postgres
 
