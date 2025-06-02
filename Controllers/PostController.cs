@@ -7,7 +7,7 @@ using SkypointSocialBackend.Models;
 
 namespace SkypointSocialBackend.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PostController : ControllerBase

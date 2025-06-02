@@ -35,33 +35,37 @@ namespace SkypointSocialBackend.Controllers
             if (user == null)
                 return NotFound("User not found.");
 
-            // Check if vote already exists
             var existingVote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.PostId == request.PostId && v.UserId == request.UserId);
 
             if (existingVote != null)
             {
-                // If vote value changes, adjust counts accordingly
-                if (existingVote.Value != request.Value)
+                if (existingVote.Value == request.Value)
                 {
-                    if (existingVote.Value == 1)
+                    return Ok(new
                     {
-                        post.UpvoteCount--;
-                        post.DownvoteCount++;
-                    }
-                    else if (existingVote.Value == -1)
-                    {
-                        post.DownvoteCount--;
-                        post.UpvoteCount++;
-                    }
-
-                    existingVote.Value = request.Value;
+                        PostId = post.Id,
+                        VotesCount = post.UpvoteCount + post.DownvoteCount,
+                        Votes = post.UpvoteCount - post.DownvoteCount,
+                    });
                 }
-                // else vote value didn't change - do nothing
+
+                // Update vote and post counts
+                if (existingVote.Value == 1)
+                    post.UpvoteCount--;
+                else if (existingVote.Value == -1)
+                    post.DownvoteCount--;
+
+                if (request.Value == 1)
+                    post.UpvoteCount++;
+                else
+                    post.DownvoteCount++;
+
+                existingVote.Value = request.Value;
+                // Optionally: existingVote.UpdatedAt = DateTime.UtcNow;
             }
             else
             {
-                // Create new vote and update counts
                 var vote = new Vote
                 {
                     PostId = request.PostId,
@@ -76,9 +80,13 @@ namespace SkypointSocialBackend.Controllers
                     post.DownvoteCount++;
             }
 
-
             await _context.SaveChangesAsync();
-            return Ok("Vote recorded.");
+            return Ok(new
+            {
+                PostId = post.Id,
+                VotesCount = post.UpvoteCount + post.DownvoteCount,
+                Votes = post.UpvoteCount - post.DownvoteCount,
+            });
         }
     }
 
