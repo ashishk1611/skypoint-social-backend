@@ -1,7 +1,5 @@
 ﻿namespace SkypointSocialBackend.Data
 {
-    using System.Collections.Generic;
-    using System.Reflection.Emit;
     using Microsoft.EntityFrameworkCore;
     using SkypointSocialBackend.Models;
 
