@@ -1,9 +1,10 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SkypointSocialBackend;
 using SkypointSocialBackend.Data;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,15 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables(); // <- this line is key
+builder.Services.Configure<GoogleOptions>(
+    builder.Configuration.GetSection("Authentication:Google"));
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
