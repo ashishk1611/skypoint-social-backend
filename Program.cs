@@ -53,11 +53,11 @@ var app = builder.Build();
 
 // Use CORS
 app.UseCors("AllowLocalhost3000");
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

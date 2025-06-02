@@ -1,27 +1,25 @@
-# Use the official .NET SDK image to build the app
+# --- Build Stage ---
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copy .csproj and restore dependencies
+# Copy solution and project file(s)
+COPY *.sln ./
 COPY *.csproj ./
+
+# Restore dependencies
 RUN dotnet restore
 
-# Copy the rest of the application
+# Copy everything and publish
 COPY . ./
+RUN dotnet publish -c Release -o /app/publish --no-restore
 
-# Build and publish the app
-RUN dotnet publish -c Release -o out
-
-# Use ASP.NET runtime image for the final container
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# --- Runtime Stage ---
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Copy published output from the build stage
-COPY --from=build /app/out .
-
-# Set environment variables (optional: use secrets in Render for actual values)
+ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
 
-# Start the application
+COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "SkypointSocialBackend.dll"]
