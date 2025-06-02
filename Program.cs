@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     });
     options.AddPolicy("skypoint-social-frontend", policy =>
     {
-        policy.WithOrigins("https://skypoint-social-frontend.vercel.app/")
+        policy.WithOrigins("https://skypoint-social-frontend.vercel.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
