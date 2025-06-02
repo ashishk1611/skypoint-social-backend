@@ -16,6 +16,12 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
+    options.AddPolicy("skypoint-social-frontend", policy =>
+    {
+        policy.WithOrigins("https://skypoint-social-frontend.vercel.app/")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddControllers();
@@ -53,6 +59,7 @@ var app = builder.Build();
 
 // Use CORS
 app.UseCors("AllowLocalhost3000");
+app.UseCors("skypoint-social-frontend");
 //if (app.Environment.IsDevelopment())
 //{
     app.UseSwagger();
